@@ -8,9 +8,9 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-//遍历 ：根 - 左 - 右
-//应用 ：实现目录结构的显示
-func main() {
+//遍历 ：左 - 右 - 根
+//应用 ：以用来实现计算目录内的文件占用的数据大小
+func main()  {
 	root := &TreeNode{
 		Val: 3,
 		Left: &TreeNode{
@@ -32,24 +32,27 @@ func main() {
 			},
 		},
 	}
-	res := preOrderTraversal(root)
+
+	res := postOrderTraversal(root)
 	log.Println(res)
 }
 
-func preOrderTraversal(node *TreeNode) []int {
+func postOrderTraversal(node *TreeNode) []int {
 	if node == nil {
 		return []int{}
 	}
+
 	res := []int{}
-	preOrder(node, &res)
+	postOrder(node, &res)
 	return res
 }
 
-func preOrder(node *TreeNode, ans *[]int)  {
+func postOrder(node *TreeNode, ans *[]int)  {
 	if node == nil {
 		return
 	}
+
+	postOrder(node.Left, ans)
+	postOrder(node.Right, ans)
 	*ans = append(*ans, node.Val)
-	preOrder(node.Left, ans)
-	preOrder(node.Right, ans)
 }
