@@ -4,7 +4,7 @@ import "log"
 
 //快速排序
 func main() {
-	l := []float64{2, 3, 4, 1, 2, 223, 4, 2, 2, 3, 4}
+	l := []float64{2, 3, 4, 1, 7, 2, 223, 4, 2, 2, 3, 4}
 	quickSort(l, 0, len(l)-1)
 	log.Println(l)
 }
@@ -17,14 +17,14 @@ func quickSort(arr []float64, low int, high int) {
 	pivot := arr[left]
 
 	for left < right {
-		if left < right && arr[right] >= pivot {
+		for left < right && arr[right] >= pivot {
 			right--
 		}
 		if left < right {
 			arr[left] = arr[right]
 		}
 
-		if left < right && arr[left] < pivot {
+		for left < right && arr[left] < pivot {
 			left++
 		}
 
