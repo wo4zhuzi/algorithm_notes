@@ -47,10 +47,12 @@ func (sl *SkipList) Insert(score float64, value interface{}) *Node {
 		update[i] = xNode
 	}
 
+	candidate := xNode.next[0]
+
 	//如果xNode的next节点score和插入score相同则直接改value值
-	if xNode.next[0] != nil && xNode.next[0].score == score {
-		xNode.next[0].value = value
-		return xNode.next[0]
+	if candidate != nil && candidate.score == score {
+		candidate.value = value
+		return candidate
 	}
 
 	level := sl.randLevel()
@@ -79,11 +81,44 @@ func (sl *SkipList) Search(score float64) (*Node, bool) {
 		}
 	}
 
+	candidate := xNode.next[0]
+
 	//如果xNode的next节点score和插入score则直接返回
-	if xNode.next[0] != nil && xNode.next[0].score == score {
-		return xNode.next[0], true
+	if candidate != nil && candidate.score == score {
+		return candidate, true
 	}
 	return nil, false
+}
+
+func (sl *SkipList) Delete(score float64) *Node {
+	update := make([]*Node, maxLevel)
+	xNode := sl.head
+
+	for i := sl.level - 1; i >= 0; i-- {
+		for xNode.next[i] != nil && xNode.next[i].score < score {
+			xNode = xNode.next[i]
+		}
+		update[i] = xNode
+	}
+
+	candidate := xNode.next[0]
+
+	if candidate == nil || candidate.score != score {
+		return nil
+	}
+
+	if candidate != nil && candidate.score == score {
+		for i := 0; i < sl.level-1; i++ {
+			//自下而上如果下一节点不等于删除节点，那么直接退出，会少几次循环
+			if update[i].next[i] != candidate {
+				break
+			}
+			update[i].next[i] = candidate.next[i]
+		}
+		sl.length--
+	}
+
+	return candidate
 }
 
 func (sl *SkipList) randLevel() int {
