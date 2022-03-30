@@ -1,6 +1,9 @@
 package main
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+)
 
 const (
 	maxLevel = 48
@@ -88,6 +91,26 @@ func (sl *SkipList) Search(score float64) (*Node, bool) {
 		return candidate, true
 	}
 	return nil, false
+}
+
+func (sl *SkipList) Range(from float64, to float64) ([]*Node, error) {
+	if from > to {
+		return nil, fmt.Errorf("from can not gt to")
+	}
+	var firstNode *Node
+	for i := from; i <= to; i++ {
+		firstNode, _ = sl.Search(i)
+		if firstNode != nil {
+			break
+		}
+	}
+
+	var listNode []*Node
+	for i := firstNode; i.score <= to; i = i.next[0] {
+		listNode = append(listNode, i)
+	}
+
+	return listNode, nil
 }
 
 func (sl *SkipList) Delete(score float64) *Node {
